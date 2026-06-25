@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brandon's Projects</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <!-- Controls what appears when shared on iMessage, text, social, etc. -->
+  <meta property="og:title" content="Brandon's Projects" />
+  <meta property="og:description" content="Games, trackers, and tools by Brandon Dengel." />
+  <meta property="og:image" content="favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Brandon's Projects" />
+  <meta name="twitter:image" content="favicon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #fff;
+      font-family: 'Nunito', sans-serif;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+    .site-title {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      color: inherit;
+      background: #fff;
+    }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+    }
+
+    .card-art {
+      flex-shrink: 0;
+      width: 130px;
+      height: 90px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .card-info {
+      padding: 14px 18px;
+    }
+    .card-name {
+      font-size: 17px;
+      font-weight: 900;
+      margin-bottom: 3px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #666;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    /* ── Shutterfly locked card ── */
+    .card-locked {
+      cursor: pointer;
+    }
+    .lock-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: #e8a020;
+      background: #fff8ec;
+      border: 1.5px solid #f0c060;
+      border-radius: 6px;
+      padding: 2px 7px;
+      display: inline-block;
+      margin-top: 5px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      padding: 36px 32px 28px;
+      width: 320px;
+      max-width: 90vw;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .modal-icon { font-size: 36px; margin-bottom: 10px; }
+    .modal h2 {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .modal p {
+      font-size: 13px;
+      color: #888;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .modal input {
+      width: 100%;
+      padding: 10px 14px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.15s;
+    }
+    .modal input:focus { border-color: #e8a020; }
+    .modal input.error { border-color: #e84040; }
+    .modal-error {
+      font-size: 12px;
+      color: #e84040;
+      font-weight: 800;
+      min-height: 18px;
+      margin-bottom: 8px;
+    }
+    .modal-btn {
+      width: 100%;
+      padding: 11px;
+      background: #e8a020;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .modal-btn:hover { background: #c8880a; }
+    .modal-cancel {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #bbb;
+      font-weight: 700;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Nunito', sans-serif;
+    }
+    .modal-cancel:hover { color: #888; }
+
+    footer {
+      margin-top: 48px;
+      font-size: 13px;
+      color: #bbb;
+      font-weight: 700;
+    }
+    footer a { color: #aaa; text-decoration: none; }
+    footer a:hover { color: #555; }
+
+    @media (max-width: 480px) {
+      .card-art { width: 100px; height: 70px; }
+      .card-info { padding: 10px 14px; }
+      .card-name { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="site-title">Brandon's Projects</div>
+</header>
+
+<div class="list">
+
+  <!-- ── CHORB FIFA 2026 ── -->
+  <a class="card" href="/World-Cup-2026-CHORB/" target="_blank" rel="noopener">
+    <img class="card-art" src="World-Cup-2026-CHORB.png" alt="FIFA World Cup 2026 - CHORB Tracker" />
+    <div class="card-info">
+      <div class="card-name">FIFA World Cup 2026 - CHORB Tracker</div>
+      <div class="card-desc">Live World Cup Tracking for 2026 CHORB World Cup Draft Challenge</div>
+    </div>
+  </a>
+
+  <!-- ── BPOW APA Pool Tracker ── -->
+  <a class="card" href="/APA-Big-Pitcher-of-Water/" target="_blank" rel="noopener">
+    <img class="card-art" src="APA-Big-Pitcher-of-Water.png" alt="Big Pitcher of Water" />
+    <div class="card-info">
+      <div class="card-name">APA Tracker - Big Pitcher of Water</div>
+      <div class="card-desc">Nick's Double Jeopardy, Monday Nights. Stats beginning in Spring 2026 session.</div>
+    </div>
+  </a>
+
+  <!-- ── First Born ── -->
+  <a class="card" href="/FirstBornGame/" target="_blank" rel="noopener">
+    <img class="card-art" src="FirstBornGame.png" alt="First Born" />
+    <div class="card-info">
+      <div class="card-name">First Born</div>
+      <div class="card-desc">Birth year guessing game</div>
+    </div>
+  </a>
+
+  <!-- ── CelebGridy ── -->
+  <a class="card" href="/CelebGridy/" target="_blank" rel="noopener">
+    <img class="card-art" src="CelebGridy.png" alt="CelebGridy" />
+    <div class="card-info">
+      <div class="card-name">CelebGridy</div>
+      <div class="card-desc">Immaculate Grid-style celebrity guessing game</div>
+    </div>
+  </a>
+
+  <!-- ── Shutterfly (password protected) ── -->
+  <div class="card card-locked" onclick="openModal()">
+    <img class="card-art" src="Shutterfly.png" alt="Wedding Photos" />
+    <div class="card-info">
+      <div class="card-name">Wedding Photos</div>
+      <div class="card-desc">Private Shutterfly album.</div>
+      <span class="lock-badge">🔒 Password Required</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Ideas by <a href="https://www.linkedin.com/in/brandon-dengel-pe-617673121/" target="_blank" rel="noopener">Brandon Dengel</a>, made using Claude AI</p>
+</footer>
+
+<!-- ── Password Modal ── -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-icon">📷</div>
+    <h2>Wedding Photos</h2>
+    <p>Enter the password to view this album.</p>
+    <input type="password" id="pw-input" placeholder="Password"
+           onkeydown="if(event.key==='Enter') checkPassword()" />
+    <div class="modal-error" id="pw-error"></div>
+    <button class="modal-btn" onclick="checkPassword()">View Album</button>
+    <br/>
+    <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('modal').classList.add('active');
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-error').textContent = '';
+    document.getElementById('pw-input').classList.remove('error');
+    setTimeout(() => document.getElementById('pw-input').focus(), 50);
+  }
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal')) closeModal();
+  }
+  function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    if (val === '10525') {
+      closeModal();
+      window.open('https://linkit.shutterfly.com/aAQJOe', '_blank');
+    } else {
+      document.getElementById('pw-error').textContent = 'Incorrect password. Try again.';
+      document.getElementById('pw-input').classList.add('error');
+      document.getElementById('pw-input').select();
+    }
+  }
+</script>
+
+</body>
+</html>
